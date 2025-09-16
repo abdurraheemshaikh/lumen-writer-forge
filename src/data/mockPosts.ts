@@ -18,7 +18,7 @@ export interface BlogPost {
 export const mockPosts: BlogPost[] = [
   {
     id: "1",
-    title: "The Future of Web Development: Trends to Watch in 2024",
+    title: "The Future of We Development: Trends to Watch in 2024",
     excerpt: "Explore the cutting-edge technologies and methodologies that are shaping the future of web development, from AI integration to advanced frameworks.",
     content: `
 # The Future of Web Development: Trends to Watch in 2024
