@@ -2,22 +2,7 @@ import { Link } from "react-router-dom";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
-interface BlogPost {
-  id: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  author: {
-    name: string;
-    avatar: string;
-  };
-  publishedAt: string;
-  readTime: number;
-  category: string;
-  tags: string[];
-  featuredImage: string;
-}
+import { BlogPost } from "@/hooks/useBlogPosts";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -39,13 +24,13 @@ const BlogCard = ({ post, featured = false }: BlogCardProps) => {
         featured ? "md:col-span-2 md:row-span-2" : ""
       }`}
     >
-      <Link to={`/post/${post.id}`} className="block">
+      <Link to={`/post/${post.slug}`} className="block">
         {/* Featured Image */}
         <div className={`relative overflow-hidden rounded-lg mb-4 ${
           featured ? "h-64 md:h-80" : "h-48"
         }`}>
           <img
-            src={post.featuredImage}
+            src={post.featured_image || "/placeholder.svg"}
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
@@ -54,7 +39,7 @@ const BlogCard = ({ post, featured = false }: BlogCardProps) => {
           {/* Category Badge */}
           <div className="absolute top-4 left-4">
             <Badge variant="secondary" className="bg-white/90 text-primary font-semibold">
-              {post.category}
+              {post.categories?.name || "General"}
             </Badge>
           </div>
         </div>
@@ -65,11 +50,11 @@ const BlogCard = ({ post, featured = false }: BlogCardProps) => {
           <div className="flex items-center space-x-4 text-sm text-muted-foreground">
             <div className="flex items-center space-x-1">
               <Calendar className="h-4 w-4" />
-              <span>{formatDate(post.publishedAt)}</span>
+              <span>{formatDate(post.published_at || post.created_at)}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Clock className="h-4 w-4" />
-              <span>{post.readTime} min read</span>
+              <span>5 min read</span>
             </div>
           </div>
 
@@ -84,28 +69,30 @@ const BlogCard = ({ post, featured = false }: BlogCardProps) => {
           <p className={`text-muted-foreground leading-relaxed ${
             featured ? "text-base md:text-lg" : "text-sm"
           }`}>
-            {post.excerpt}
+            {post.excerpt || post.content.substring(0, 150) + "..."}
           </p>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-2">
-            {post.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="outline" className="text-xs">
-                #{tag}
-              </Badge>
-            ))}
-          </div>
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {post.tags.slice(0, 3).map((tag) => (
+                <Badge key={tag} variant="outline" className="text-xs">
+                  #{tag}
+                </Badge>
+              ))}
+            </div>
+          )}
 
           {/* Author & Read More */}
           <div className="flex items-center justify-between pt-3">
             <div className="flex items-center space-x-3">
               <img
-                src={post.author.avatar}
-                alt={post.author.name}
+                src={post.author_avatar || "/placeholder.svg"}
+                alt={post.author_name}
                 className="w-8 h-8 rounded-full object-cover"
               />
               <span className="text-sm font-medium text-foreground">
-                {post.author.name}
+                {post.author_name}
               </span>
             </div>
             

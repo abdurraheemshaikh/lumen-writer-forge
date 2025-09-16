@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import BlogHeader from "@/components/blog/BlogHeader";
-import { mockPosts, type BlogPost as BlogPostType } from "@/data/mockPosts";
+import { useBlogPost, useRelatedPosts } from "@/hooks/useBlogPosts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -12,9 +12,21 @@ const BlogPost = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   
-  const post = mockPosts.find((p) => p.id === id);
+  const { data: post, isLoading, error } = useBlogPost(id || "");
+  const { data: relatedPosts } = useRelatedPosts(post?.id || "", post?.category_id || null);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <BlogHeader />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <div>Loading post...</div>
+        </div>
+      </div>
+    );
+  }
   
-  if (!post) {
+  if (error || !post) {
     return (
       <div className="min-h-screen bg-background">
         <BlogHeader />
@@ -32,10 +44,6 @@ const BlogPost = () => {
     );
   }
 
-  const relatedPosts = mockPosts
-    .filter((p) => p.id !== post.id && p.category === post.category)
-    .slice(0, 3);
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -48,7 +56,7 @@ const BlogPost = () => {
     if (navigator.share) {
       await navigator.share({
         title: post.title,
-        text: post.excerpt,
+        text: post.excerpt || "",
         url: window.location.href,
       });
     } else {
@@ -76,7 +84,7 @@ const BlogPost = () => {
           <header className="mb-8">
             <div className="mb-4">
               <Badge variant="secondary" className="bg-primary/10 text-primary font-semibold">
-                {post.category}
+                {post.categories?.name || "General"}
               </Badge>
             </div>
             
@@ -84,28 +92,30 @@ const BlogPost = () => {
               {post.title}
             </h1>
             
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              {post.excerpt}
-            </p>
+            {post.excerpt && (
+              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+                {post.excerpt}
+              </p>
+            )}
 
             {/* Author & Meta */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-8">
               <div className="flex items-center space-x-4">
                 <img
-                  src={post.author.avatar}
-                  alt={post.author.name}
+                  src={post.author_avatar || "/placeholder.svg"}
+                  alt={post.author_name}
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <div className="font-semibold">{post.author.name}</div>
+                  <div className="font-semibold">{post.author_name}</div>
                   <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                     <span className="flex items-center">
                       <Calendar className="w-4 h-4 mr-1" />
-                      {formatDate(post.publishedAt)}
+                      {formatDate(post.published_at || post.created_at)}
                     </span>
                     <span className="flex items-center">
                       <Clock className="w-4 h-4 mr-1" />
-                      {post.readTime} min read
+                      5 min read
                     </span>
                   </div>
                 </div>
@@ -144,34 +154,36 @@ const BlogPost = () => {
           </header>
 
           {/* Featured Image */}
-          <div className="mb-12">
-            <img
-              src={post.featuredImage}
-              alt={post.title}
-              className="w-full h-64 md:h-96 object-cover rounded-xl shadow-lg"
-            />
-          </div>
+          {post.featured_image && (
+            <div className="mb-12">
+              <img
+                src={post.featured_image}
+                alt={post.title}
+                className="w-full h-64 md:h-96 object-cover rounded-xl shadow-lg"
+              />
+            </div>
+          )}
 
           {/* Article Content */}
           <div className="article-content mb-12">
-            <div
-              dangerouslySetInnerHTML={{ 
-                __html: post.content.replace(/\n/g, '<br>').replace(/^# /gm, '<h1>').replace(/<\/h1>/g, '</h1>') 
-              }}
-            />
+            <div className="prose prose-lg max-w-none text-foreground/90 leading-relaxed whitespace-pre-line">
+              {post.content}
+            </div>
           </div>
 
           {/* Tags */}
-          <div className="mb-8">
-            <h3 className="font-semibold mb-4">Tags</h3>
-            <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <Badge key={tag} variant="outline" className="hover:bg-primary hover:text-white transition-colors cursor-pointer">
-                  #{tag}
-                </Badge>
-              ))}
+          {post.tags && post.tags.length > 0 && (
+            <div className="mb-8">
+              <h3 className="font-semibold mb-4">Tags</h3>
+              <div className="flex flex-wrap gap-2">
+                {post.tags.map((tag) => (
+                  <Badge key={tag} variant="outline" className="hover:bg-primary hover:text-white transition-colors cursor-pointer">
+                    #{tag}
+                  </Badge>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <Separator className="mb-8" />
 
@@ -179,19 +191,19 @@ const BlogPost = () => {
           <div className="bg-muted/50 rounded-xl p-6 mb-12">
             <div className="flex items-start space-x-4">
               <img
-                src={post.author.avatar}
-                alt={post.author.name}
+                src={post.author_avatar || "/placeholder.svg"}
+                alt={post.author_name}
                 className="w-16 h-16 rounded-full object-cover"
               />
               <div className="flex-1">
-                <h4 className="font-semibold text-lg mb-2">About {post.author.name}</h4>
+                <h4 className="font-semibold text-lg mb-2">About {post.author_name}</h4>
                 <p className="text-muted-foreground mb-4">
-                  {post.author.name} is a passionate writer and expert in their field, 
+                  {post.author_bio || `${post.author_name} is a passionate writer and expert in their field, 
                   regularly contributing insights about technology, design, and innovation. 
-                  Follow their work for more thought-provoking articles.
+                  Follow their work for more thought-provoking articles.`}
                 </p>
                 <Button variant="outline" size="sm">
-                  Follow {post.author.name}
+                  Follow {post.author_name}
                 </Button>
               </div>
             </div>
@@ -220,36 +232,36 @@ const BlogPost = () => {
       </article>
 
       {/* Related Posts */}
-      {relatedPosts.length > 0 && (
+      {relatedPosts && relatedPosts.length > 0 && (
         <section className="bg-muted/30 py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <h2 className="text-3xl font-bold mb-8 text-center">Related Articles</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {relatedPosts.map((relatedPost) => (
-                  <Link key={relatedPost.id} to={`/post/${relatedPost.id}`} className="group">
+                  <Link key={relatedPost.id} to={`/post/${relatedPost.slug}`} className="group">
                     <article className="blog-card">
                       <div className="relative overflow-hidden rounded-lg mb-4 h-48">
                         <img
-                          src={relatedPost.featuredImage}
+                          src={relatedPost.featured_image || "/placeholder.svg"}
                           alt={relatedPost.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
                       <div className="space-y-3">
                         <Badge variant="secondary" className="bg-primary/10 text-primary text-xs">
-                          {relatedPost.category}
+                          {relatedPost.categories?.name || "General"}
                         </Badge>
                         <h3 className="font-semibold leading-tight group-hover:text-primary transition-colors">
                           {relatedPost.title}
                         </h3>
                         <p className="text-sm text-muted-foreground line-clamp-2">
-                          {relatedPost.excerpt}
+                          {relatedPost.excerpt || relatedPost.content.substring(0, 120) + "..."}
                         </p>
                         <div className="flex items-center text-xs text-muted-foreground">
-                          <span>{relatedPost.readTime} min read</span>
+                          <span>5 min read</span>
                           <span className="mx-2">•</span>
-                          <span>{relatedPost.author.name}</span>
+                          <span>{relatedPost.author_name}</span>
                         </div>
                       </div>
                     </article>
