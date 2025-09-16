@@ -10,10 +10,6 @@ const BlogHeader = () => {
 
   const navigation = [
     { name: "Home", href: "/" },
-    { name: "Tech", href: "/category/tech" },
-    { name: "Design", href: "/category/design" },
-    { name: "Business", href: "/category/business" },
-    { name: "About", href: "/about" },
   ];
 
   return (
