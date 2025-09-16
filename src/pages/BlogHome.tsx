@@ -2,47 +2,22 @@ import { useState } from "react";
 import BlogHeader from "@/components/blog/BlogHeader";
 import BlogHero from "@/components/blog/BlogHero";
 import BlogCard from "@/components/blog/BlogCard";
-import { useBlogPosts } from "@/hooks/useBlogPosts";
+import { mockPosts } from "@/data/mockPosts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Clock, Users } from "lucide-react";
 
 const BlogHome = () => {
-  const { data: posts, isLoading, error } = useBlogPosts();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   
-  const categories = ["Technology", "Design", "Business"];
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <BlogHeader />
-        <BlogHero />
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center">Loading posts...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background">
-        <BlogHeader />
-        <BlogHero />
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center text-red-500">Error loading posts</div>
-        </div>
-      </div>
-    );
-  }
+  const categories = ["Tech", "Design", "Business"];
   
-  const filteredPosts = selectedCategory && posts
-    ? posts.filter(post => post.categories?.name === selectedCategory)
-    : posts || [];
+  const filteredPosts = selectedCategory 
+    ? mockPosts.filter(post => post.category === selectedCategory)
+    : mockPosts;
 
-  const featuredPost = posts?.[0];
-  const regularPosts = posts?.slice(1) || [];
+  const featuredPost = mockPosts[0];
+  const regularPosts = mockPosts.slice(1);
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,66 +25,64 @@ const BlogHome = () => {
       <BlogHero />
       
       {/* Featured Section */}
-      {featuredPost && (
-        <section className="py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-3xl font-bold mb-2">Featured Story</h2>
-                <p className="text-muted-foreground">Don't miss our top pick this week</p>
-              </div>
-              <Badge variant="secondary" className="bg-primary text-primary-foreground">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                Trending
-              </Badge>
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="text-3xl font-bold mb-2">Featured Story</h2>
+              <p className="text-muted-foreground">Don't miss our top pick this week</p>
+            </div>
+            <Badge variant="secondary" className="bg-primary text-primary-foreground">
+              <TrendingUp className="w-4 h-4 mr-1" />
+              Trending
+            </Badge>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="md:col-span-2">
+              <BlogCard post={featuredPost} featured />
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="md:col-span-2">
-                <BlogCard post={featuredPost} featured />
-              </div>
-              
-              {/* Popular Posts Sidebar */}
-              <div className="space-y-6">
-                <div className="bg-card border border-border rounded-xl p-6">
-                  <h3 className="font-semibold mb-4 flex items-center">
-                    <Clock className="w-5 h-5 mr-2 text-primary" />
-                    Quick Reads
-                  </h3>
-                  <div className="space-y-4">
-                    {regularPosts.slice(0, 3).map((post) => (
-                      <div key={post.id} className="group">
-                        <h4 className="font-medium text-sm leading-tight group-hover:text-primary transition-colors">
-                          {post.title}
-                        </h4>
-                        <div className="flex items-center mt-2 text-xs text-muted-foreground">
-                          <span>5 min</span>
-                          <span className="mx-2">•</span>
-                          <span>{post.author_name}</span>
-                        </div>
+            {/* Popular Posts Sidebar */}
+            <div className="space-y-6">
+              <div className="bg-card border border-border rounded-xl p-6">
+                <h3 className="font-semibold mb-4 flex items-center">
+                  <Clock className="w-5 h-5 mr-2 text-primary" />
+                  Quick Reads
+                </h3>
+                <div className="space-y-4">
+                  {regularPosts.slice(0, 3).map((post) => (
+                    <div key={post.id} className="group">
+                      <h4 className="font-medium text-sm leading-tight group-hover:text-primary transition-colors">
+                        {post.title}
+                      </h4>
+                      <div className="flex items-center mt-2 text-xs text-muted-foreground">
+                        <span>{post.readTime} min</span>
+                        <span className="mx-2">•</span>
+                        <span>{post.author.name}</span>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
+              </div>
 
-                <div className="bg-card border border-border rounded-xl p-6">
-                  <h3 className="font-semibold mb-4 flex items-center">
-                    <Users className="w-5 h-5 mr-2 text-primary" />
-                    Popular Tags
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {["web development", "technology", "ux design", "business strategy", "startups", "design thinking"].map((tag) => (
-                      <Badge key={tag} variant="outline" className="text-xs hover:bg-primary hover:text-white transition-colors cursor-pointer">
-                        #{tag}
-                      </Badge>
-                    ))}
-                  </div>
+              <div className="bg-card border border-border rounded-xl p-6">
+                <h3 className="font-semibold mb-4 flex items-center">
+                  <Users className="w-5 h-5 mr-2 text-primary" />
+                  Popular Tags
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {["web-dev", "design-systems", "startups", "ux", "remote-work", "css"].map((tag) => (
+                    <Badge key={tag} variant="outline" className="text-xs hover:bg-primary hover:text-white transition-colors cursor-pointer">
+                      #{tag}
+                    </Badge>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* Category Filter */}
       <section className="py-8 border-b border-border">
