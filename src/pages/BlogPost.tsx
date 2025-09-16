@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, Clock, ArrowLeft, Share2, Heart, Bookmark, MessageCircle } from "lucide-react";
 import { useState } from "react";
+import BlogPostView from "@/components/BlogPostView"; // Add this import
+
 
 const BlogPost = () => {
   const { id } = useParams<{ id: string }>();
@@ -153,13 +155,8 @@ const BlogPost = () => {
           </div>
 
           {/* Article Content */}
-          <div className="article-content mb-12">
-            <div
-              dangerouslySetInnerHTML={{ 
-                __html: post.content.replace(/\n/g, '<br>').replace(/^# /gm, '<h1>').replace(/<\/h1>/g, '</h1>') 
-              }}
-            />
-          </div>
+          <BlogPostView post={post} />
+
 
           {/* Tags */}
           <div className="mb-8">
