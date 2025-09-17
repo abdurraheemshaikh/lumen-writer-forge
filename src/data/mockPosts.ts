@@ -113,7 +113,7 @@ Ultimately, AI’s future won’t be determined by whether we declare a “winte
     `,
     author: {
       name: "Abdur Raheem Shaikh",
-      avatar: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=100&h=100&fit=crop&crop=faces" // Dog avatar 🐶
+avatar: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=100&h=100&fit=crop&crop=faces"
     },
     publishedAt: "2025-09-16",
     readTime: 10,

@@ -18,11 +18,11 @@ const BlogHeader = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 hero-gradient rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">B</span>
+            <div className="w-16 h-12 hero-gradient rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">BLOG</span>
             </div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              ModernBlog
+              The Thinking Circuit
             </h1>
           </Link>
 

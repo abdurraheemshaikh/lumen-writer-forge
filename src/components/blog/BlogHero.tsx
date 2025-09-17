@@ -50,19 +50,7 @@ const BlogHero = () => {
           </div>
 
           {/* Stats */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-12 pt-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="flex items-center space-x-3 text-white/90">
-                <div className="p-2 bg-white/10 rounded-lg">
-                  <stat.icon className="h-5 w-5" />
-                </div>
-                <div className="text-left">
-                  <div className="text-2xl font-bold">{stat.value}</div>
-                  <div className="text-sm text-white/70">{stat.label}</div>
-                </div>
-              </div>
-            ))}
-          </div>
+         
         </div>
       </div>
 

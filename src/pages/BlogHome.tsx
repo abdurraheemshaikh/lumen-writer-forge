@@ -172,10 +172,10 @@ const BlogHome = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 hero-gradient rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">B</span>
+                <div className="w-16 h-12 hero-gradient rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">Blog</span>
                 </div>
-                <h3 className="font-bold text-lg">ModernBlog</h3>
+                <h3 className="font-bold text-lg">The Thinking Circuit</h3>
               </div>
               <p className="text-muted-foreground text-sm">
                 Sharing insights about technology, design, and business innovation.
@@ -205,16 +205,20 @@ const BlogHome = () => {
             <div>
               <h4 className="font-semibold mb-3">Connect</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <div>Twitter</div>
+               <a href="https://www.linkedin.com/in/abdur-raheem-shaikh-55b0382b5/" target="_blank" rel="noopener noreferrer">
                 <div>LinkedIn</div>
+               </a>
+
+               <a href="https://github.com/abdurraheemshaikh" target="_blank" rel="noopener noreferrer">
                 <div>GitHub</div>
-                <div>Newsletter</div>
+               </a>
+
               </div>
             </div>
           </div>
           
           <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-            © 2024 ModernBlog. All rights reserved.
+            © 2025 The Thinking Circuit. All rights reserved.
           </div>
         </div>
       </footer>
