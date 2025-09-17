@@ -109,14 +109,14 @@ const BlogCard = ({ post, featured = false }: BlogCardProps) => {
               </span>
             </div>
             
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-primary hover:text-accent group-hover:translate-x-1 transition-all p-0"
-            >
-              Read More
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+              className="text-primary hover:text-accent-foreground group-hover:translate-x-1 transition-all p-0">
+                Read More
+            <ArrowRight className="ml-1 h-8 w-8" />
+          </Button>
+
           </div>
         </div>
       </Link>
